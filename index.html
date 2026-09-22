@@ -934,26 +934,6 @@
   .sheet{border-radius:24px 24px 0 0 !important;padding-bottom:calc(30px + env(safe-area-inset-bottom)) !important;}
   .toast{bottom:calc(74px + env(safe-area-inset-bottom)) !important;}
   @supports (height:100dvh){ .phone,.screen{height:100dvh !important;} }
-  /* ===== larger type for mobile ===== */
-  /* ===== responsive scaling: --z is set by JS from viewport width/height/orientation (390px = 1.0) ===== */
-  :root{--z:1.15;--zb:1;}
-  .body,.detail,.ob-body,.sheet,.ava-msgs,.ava-chips,.ava-consent,.msg-body,.email-body{zoom:var(--z);}
-  .appbar,.appbar-d,.ob-head,.ava-head,.isi{zoom:var(--zb);}
-  .phone{max-width:560px !important;}
-  /* short / landscape viewports: tighten vertical space */
-  @media (max-height:520px){
-    .ob-body,.body{padding-top:10px !important;padding-bottom:10px !important;}
-    .isi p{display:none;} .isi .isi-head{padding:5px 0;}
-  }
-  /* tablets & foldables: keep the phone-width column centered on a dark stage */
-  @media (min-width:700px){ html,body{background:#0b1a26 !important;} .phone{max-width:560px !important;} }
-  /* very narrow phones */
-  @media (max-width:340px){ .tile .lbl{font-size:12px !important;} }
-  .tile .lbl{font-size:13px !important;line-height:1.25;}
-  .tile{padding:12px 4px 11px;}
-  .sec-label{font-size:12.5px;}
-  .isi p{font-size:10px;} .isi .isi-head b{font-size:11.5px;}
-  .screen.big .body,.screen.big .detail,.screen.big .ob-body{zoom:calc(var(--z) * 1.1);}
 </style>
 </head>
 <body>
@@ -3356,30 +3336,6 @@ renderSim();
 fillWebInd();
 renderIndBar();
 
-
-/* ===== RESPONSIVE FIT: scale UI to the actual device viewport ===== */
-(function(){
-  var BASE=390;
-  function fit(){
-    var vw=(window.visualViewport&&window.visualViewport.width)||window.innerWidth;
-    var vh=(window.visualViewport&&window.visualViewport.height)||window.innerHeight;
-    var w=Math.min(vw,560);
-    var s=w/BASE;                       /* 1.0 at 390px wide */
-    s=Math.max(0.85,Math.min(1.45,s));  /* clamp for tiny phones and tablets */
-    var landscape=vw>vh && vh<520;
-    if(landscape) s*=0.82;              /* short viewport: pull sizes down so flows stay on screen */
-    var z=s*1.15;                       /* content areas (includes the +15% type bump) */
-    var zb=Math.max(0.9,Math.min(1.25,s)); /* bars/headers scale a little less */
-    var r=document.documentElement.style;
-    r.setProperty('--z',z.toFixed(3)); r.setProperty('--zb',zb.toFixed(3));
-    document.documentElement.classList.toggle('is-landscape',landscape);
-    document.documentElement.classList.toggle('is-tablet',vw>=700);
-  }
-  fit();
-  window.addEventListener('resize',fit);
-  window.addEventListener('orientationchange',function(){ setTimeout(fit,120); });
-  if(window.visualViewport) window.visualViewport.addEventListener('resize',fit);
-})();
 /* ===== MOBILE MODE INIT: always start at the Point-of-Care entry (no persistence, refresh = fresh start) ===== */
 (function(){
   try{ if(window.localStorage){ localStorage.clear(); } if(window.sessionStorage){ sessionStorage.clear(); } }catch(e){}
